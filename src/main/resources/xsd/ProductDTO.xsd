@@ -1,0 +1,33 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://uni-miskolc/distributed/shop"
+           elementFormDefault="qualified">
+
+
+    <xs:complexType name="ProductRegistrationRequest">
+        <xs:sequence>
+            <xs:element name="itemID" type="xs:string"/>
+            <xs:element name="itemName" type="xs:string"/>
+            <xs:element name="price" type="xs:int"/>
+            <xs:element name="manufacturer" type="xs:string"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="Warranty">
+
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="private">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:int">
+                                        <xs:attribute name="company" type="xs:int" use="required"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+</xs:schema>

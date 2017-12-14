@@ -1,0 +1,26 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:shop="http://uni-miskolc/distributed/shop"
+           targetNamespace="http://uni-miskolc/distributed/shop"
+           elementFormDefault="qualified"
+>
+
+    <xs:include schemaLocation="ProductDTO.xsd"/>
+
+
+    <xs:complexType name="ShopRegistrationRequest">
+        <xs:sequence>
+            <xs:element name="shopID" type="xs:string"/>
+            <xs:element name="shopName" type="xs:string"/>
+            <xs:element name="productList">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="product" type="shop:ProductRegistrationRequest" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+</xs:schema>
