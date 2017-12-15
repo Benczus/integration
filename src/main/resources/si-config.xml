@@ -16,14 +16,13 @@
     <int:channel id="stdOutChannel"/>
     <int:channel id="messageChannel"/>
 
-    <int:channel id="productListChannel"/>
     <int:channel id="productRegistrationRequestChannel"/>
     <int:channel id="shopComparisonChannel"/>
 
     <int:channel id="shop1ProductListChannel"/>
     <int:channel id="shop2ProductListChannel"/>
 
-    <int:recipient-list-router id="messageRouter" input-channel="productListChannel" ignore-send-failures="true         ">
+    <int:recipient-list-router id="messageRouter" input-channel="productListChannel" ignore-send-failures="true">
         <int:recipient channel="stdOutChannel"/>
         <int:recipient channel="shop1ProductListChannel"/>
         <!--<int:recipient channel="shop2ProductListChannel"/> -->
@@ -33,7 +32,7 @@
 
     <int-stream:stdout-channel-adapter id="stdOutAdapter" channel="stdOutChannel" append-newline="true" auto-startup="true"/>
 
-    <int:gateway id="listShopGateway" service-interface="shop.systems.gateway.ShopCompGateway">
+    <int:gateway id="ShopCompGateway" service-interface="shop.systems.gateway.ShopCompGateway">
         <int:method name="listProducts" request-channel="productListChannel" reply-timeout="1000"/>
         <int:method name="addProductToShop" request-channel="productRegistrationRequestChannel" />
         <int:method name="comparePrices" request-channel="shopComparisonChannel"/>
@@ -42,11 +41,11 @@
     <int-http:outbound-gateway id="shop1ProductListGateway"
                                request-channel="shop1ProductListChannel"
                                http-method="GET"
-                               expected-response-type="uni_miskolc.distributed.shop.ShopRegistrationRequest"
-                               url="http://localhost:8080/shop/products"/>
+                               expected-response-type="shop.integration.dto.ShopDTO"
+                               url="http://localhost:8089/shop/products"/>
 
     <int-http:outbound-gateway id="productRegistrationGateway" request-channel="productRegistrationRequestChannel" http-method="GET" reply-channel="stdOutChannel" expected-response-type="java.lang.String"
-                               url="TODO"/>
+                               url="http://localhost:8089/"/>
     <int-http:outbound-gateway id="comparePricesGateway" reply-channel="shopComparisonChannel" http-method="GET" request-channel="stdOutChannel" expected-response-type="java.lang.String"
                                url="TODO"/>
 

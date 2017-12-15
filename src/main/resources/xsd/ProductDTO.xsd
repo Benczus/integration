@@ -3,7 +3,7 @@
            elementFormDefault="qualified">
 
 
-    <xs:complexType name="ProductRegistrationRequest">
+    <xs:complexType name="ProductDTO">
         <xs:sequence>
             <xs:element name="itemID" type="xs:string"/>
             <xs:element name="itemName" type="xs:string"/>

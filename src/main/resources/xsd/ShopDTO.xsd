@@ -7,14 +7,14 @@
     <xs:include schemaLocation="ProductDTO.xsd"/>
 
 
-    <xs:complexType name="ShopRegistrationRequest">
+    <xs:complexType name="ShopDTO">
         <xs:sequence>
             <xs:element name="shopID" type="xs:string"/>
             <xs:element name="shopName" type="xs:string"/>
             <xs:element name="productList">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="product" type="shop:ProductRegistrationRequest" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="product" type="shop:ProductDTO" minOccurs="0" maxOccurs="unbounded"/>
                     </xs:sequence>
                 </xs:complexType>
 

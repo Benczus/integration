@@ -1,8 +1,9 @@
 package shop.systems.gateway;
 
 import org.springframework.messaging.handler.annotation.Payload;
-import uni_miskolc.distributed.shop.ProductRegistrationRequest;
-import uni_miskolc.distributed.shop.ShopRegistrationRequest;
+import shop.integration.dto.ProductDTO;
+import shop.integration.dto.ShopDTO;
+
 
 import java.util.Collection;
 
@@ -10,10 +11,10 @@ import java.util.Collection;
 public interface ShopCompGateway {
 
 @Payload("")
-Collection<ProductRegistrationRequest> listProducts(ShopRegistrationRequest shop);
+Collection<ProductDTO> listProducts(ShopDTO shop);
 
-    void addProductToShop(ProductRegistrationRequest product, ShopRegistrationRequest shop);
+    void addProductToShop(ProductDTO product, ShopDTO shop);
 
-    void comparePrices(ShopRegistrationRequest shop1, ShopRegistrationRequest shop2);
+    void comparePrices(ShopDTO shop1,ShopDTO shop2);
 
 }
