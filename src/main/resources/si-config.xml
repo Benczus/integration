@@ -13,40 +13,92 @@
         http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
         ">
 
-    <int:channel id="stdOutChannel"/>
-    <int:channel id="messageChannel"/>
 
-    <int:channel id="productRegistrationRequestChannel"/>
-    <int:channel id="shopComparisonChannel"/>
-
-    <int:channel id="shop1ProductListChannel"/>
-    <int:channel id="shop2ProductListChannel"/>
-
-    <int:recipient-list-router id="messageRouter" input-channel="productListChannel" ignore-send-failures="true">
-        <int:recipient channel="stdOutChannel"/>
-        <int:recipient channel="shop1ProductListChannel"/>
-        <!--<int:recipient channel="shop2ProductListChannel"/> -->
-    </int:recipient-list-router>
+    <int:gateway id="Shop1Gateway"
+                 service-interface="shop.systems.gateway.Shop1Gateway">
+        <int:method name="listProducts"
+                    request-channel="shop1ReceiverChannel"
+                    reply-timeout="1000"/>
+        <!--<int:method name="addProducts"  TODO-->
 
 
-
-    <int-stream:stdout-channel-adapter id="stdOutAdapter" channel="stdOutChannel" append-newline="true" auto-startup="true"/>
-
-    <int:gateway id="ShopCompGateway" service-interface="shop.systems.gateway.ShopCompGateway">
-        <int:method name="listProducts" request-channel="productListChannel" reply-timeout="1000"/>
-        <int:method name="addProductToShop" request-channel="productRegistrationRequestChannel" />
-        <int:method name="comparePrices" request-channel="shopComparisonChannel"/>
     </int:gateway>
 
-    <int-http:outbound-gateway id="shop1ProductListGateway"
-                               request-channel="shop1ProductListChannel"
-                               http-method="GET"
-                               expected-response-type="shop.integration.dto.ShopDTO"
-                               url="http://localhost:8089/shop/products"/>
+    <int:gateway id="Shop2Gateway"
+                 service-interface="shop.systems.gateway.Shop2Gateway">
+        <int:method name="listProducts"
+                    request-channel="shop2ReceiverChannel"
+                    reply-timeout="1000"/>
+        <!--<int:method name="addProducts"  TODO-->
+    </int:gateway>
 
-    <int-http:outbound-gateway id="productRegistrationGateway" request-channel="productRegistrationRequestChannel" http-method="GET" reply-channel="stdOutChannel" expected-response-type="java.lang.String"
-                               url="http://localhost:8089/"/>
-    <int-http:outbound-gateway id="comparePricesGateway" reply-channel="shopComparisonChannel" http-method="GET" request-channel="stdOutChannel" expected-response-type="java.lang.String"
-                               url="TODO"/>
+    <int:channel id="stdOutChannel"/>
+    <int:channel id="messageChannel"/>
+    <int:channel id="surveillanceChannel"/>
+    <int:channel id="productRegistrationRequestChannel"/>
+
+
+    <int:channel id="shop1ReceiverChannel"/>
+    <int:channel id="shop2ReceiverChannel"/>
+
+
+    <int:recipient-list-router id="messageRouter" input-channel="messageChannel" ignore-send-failures="true">
+        <int:recipient channel="stdOutChannel"/>
+        <int:recipient channel="surveillanceChannel"/>
+    </int:recipient-list-router>
+    <!--TODO SZÉTDOBÁS-->
+    <!--<int:recipient-list-router>-->
+    <!--<int:recipient channel=""/>-->
+    <!--</int:recipient-list-router>-->
+    <!--TODO HEADER ÉRTÉK ALAPJÁN-->
+    <!--<int:header-value-router>-->
+    <!---->
+    <!--</int:header-value-router>-->
+
+
+    <int-stream:stdout-channel-adapter id="stdOutAdapter" channel="stdOutChannel"
+                                       append-newline="true"
+                                       auto-startup="true"/>
+
+    <int-file:outbound-channel-adapter id="surveillanceAdapter"
+                                       channel="surveillanceChannel"
+                                       directory="surveilance"
+                                       filename-generator-expression="'chat.log'"
+                                       mode="APPEND"/>
+
+
+    <int-http:outbound-gateway
+            request-channel="shop1ReceiverChannel"
+            http-method="GET"
+            expected-response-type="shop.integration.dto.ShopDTO"
+            url="http://localhost:8089/shop/"/>
+
+    <int-http:outbound-gateway
+            request-channel="shop2ReceiverChannel"
+            http-method="GET"
+            expected-response-type="shop.integration.dto.ShopDTO"
+            url="http://localhost:8088/shop/"/>
+
+
+    <!--&lt;!&ndash;TODO&ndash;&gt;-->
+    <!--<int-http:outbound-gateway id="shop1ProductRegistrationGateway"-->
+    <!--request-channel="productRegistrationRequestChannel"-->
+    <!--http-method="GET" reply-channel="stdOutChannel"-->
+    <!--expected-response-type="java.lang.String"-->
+    <!--url="http://localhost:8089/"/>-->
+
+
+    <!--<int-http:outbound-gateway id="shop2ProductListGateway"-->
+    <!--request-channel="shop2ProductListChannel"-->
+    <!--http-method="GET"-->
+    <!--expected-response-type="shop.integration.dto.ShopDTO"-->
+    <!--url="http://localhost:8089/shop/products"/>-->
+    <!--&lt;!&ndash;TODO&ndash;&gt;-->
+    <!--<int-http:outbound-gateway id="shop2ProductRegistrationGateway"-->
+    <!--request-channel="productRegistrationRequestChannel"-->
+    <!--http-method="GET" reply-channel="stdOutChannel"-->
+    <!--expected-response-type="java.lang.String"-->
+    <!--url="http://localhost:8089/"/>-->
+
 
 </beans>
