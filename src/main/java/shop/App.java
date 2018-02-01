@@ -7,9 +7,9 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import shop.integration.dto.ProductDTO;
 import shop.integration.dto.ShopDTO;
-import shop.systems.gateway.Shop1Gateway;
-import shop.systems.gateway.Shop2Gateway;
+import shop.systems.gateway.ShopGateway;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 
@@ -18,7 +18,6 @@ import java.util.Collection;
  */
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
         ApplicationContext context = new ClassPathXmlApplicationContext("/si-config.xml");
         MessageChannel stdOut = context.getBean("messageChannel", MessageChannel.class);
 
@@ -27,22 +26,37 @@ public class App {
         System.out.println("Sout says stdOut is:" + stdOut);
         stdOut.send(message);
 
-        Shop1Gateway shop1Gateway = context.getBean("Shop1Gateway", Shop1Gateway.class);
-        System.out.println(shop1Gateway.listProducts());
-
-        System.out.println("gateway.listProducts.getShopID says:" + shop1Gateway.listProducts().getProductList());
-
-
-        Shop2Gateway shop2Gateway = context.getBean("Shop2Gateway", Shop2Gateway.class);
-        System.out.println(shop2Gateway.listProducts());
-
-        System.out.println("gateway.listProducts.getShopID says:" + shop2Gateway.listProducts().getShopName());
+        ShopGateway shopGateway = context.getBean("ShopGateway", ShopGateway.class);
+        System.out.println(shopGateway.listProducts());
 
         ShopComparator shopComparator = new ShopComparator();
 
-        ShopDTO shopDTO1 = shop1Gateway.listProducts();
-        ShopDTO shopDTO2 = shop2Gateway.listProducts();
+        ArrayList<ShopDTO> shopList = shopGateway.listProducts();
+        ShopDTO shopDTO1 = shopList.get(0);
+        ShopDTO shopDTO2 = shopList.get(1);
 
+
+        System.out.println("FIRST SHOP DATA:");
+
+        for (ProductDTO productDTO : shopDTO1.getProductList().getProduct()
+                ) {
+            System.out.println(productDTO.getItemName());
+            System.out.println(productDTO.getPrice());
+            System.out.println(productDTO.getManufacturer() + "\n \n");
+
+        }
+
+        System.out.println("SECOND SHOP DATE");
+        for (ProductDTO productDTO : shopDTO2.getProductList().getProduct()
+                ) {
+            System.out.println(productDTO.getItemName());
+            System.out.println(productDTO.getPrice());
+            System.out.println(productDTO.getManufacturer() + "\n \n");
+
+        }
+
+
+        System.out.println("cicus cicus " + shopDTO1 + " " + shopDTO2);
 
         Collection<ProductDTO> bestProd;
 
@@ -56,6 +70,16 @@ public class App {
 
 
         }
+
+
+//        Message message1= MessageBuilder.withPayload("cica").setHeader("shopNumber", "shop2").build();
+
+
+//        ShopDTO shopDTO= shopGateway.listProductsByShop(message1);
+        ShopDTO shopDTO = shopGateway.listProductsByShop("shop1");
+        System.out.println(shopDTO.getShopID() + "" + shopDTO.getShopName());
+        // System.out.println(shopDTO.getShopID());
+
 
 
 
