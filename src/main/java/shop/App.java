@@ -10,7 +10,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.InboundChannelAdapter;
 import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.http.inbound.HttpRequestHandlingMessagingGateway;
@@ -20,13 +23,16 @@ import org.springframework.integration.stream.CharacterStreamWritingMessageHandl
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import sun.util.calendar.BaseCalendar;
 
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 
 /**
@@ -55,6 +61,23 @@ public class App {
         return new DirectChannel();
     }
 
+    @Bean
+    public MessageChannel shopReceiverChannel(){
+        return new DirectChannel();
+    }
+
+    @Bean
+    public MessageChannel shopReceiverChannelBetterVersion(){
+        return new DirectChannel();
+    }
+
+    @Bean
+    public MessageChannel almaChannel(){
+        MessageChannel channel =new DirectChannel();
+
+        return  channel;
+    }
+
 //    @Bean
 //    public MessageChannel replyChannel() {
 //        MessageChannel result = new DirectChannel();
@@ -63,28 +86,47 @@ public class App {
 //        return  result;
 //    }
 
-//    @Bean
-//    public HttpRequestExecutingMessageHandler httpGateway(){
-//        HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://localhost:8088/shop/");
-//        gateway.setHttpMethod(HttpMethod.GET);
-//        gateway.setExpectedResponseType(String.class);
-//        gateway.setOutputChannel(replyChannel());
-//
-//
-//        return gateway;
-//    }
+
+    @Bean
+    @ServiceActivator(inputChannel = "shopReceiverChannelBetterVersion")
+    public HttpRequestExecutingMessageHandler httpGateway(){
+        HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://localhost:8088/shop/");
+        gateway.setHttpMethod(HttpMethod.GET);
+        gateway.setExpectedResponseType(String.class);
+        gateway.setOutputChannel(almaChannel());
+        return gateway;
+    }
+
+
 
     @Bean
     public String hello(){
-        return "Hello";
+        return "alma";
     }
 
     public static void main(String[] args) throws IOException {
         ApplicationContext context = new AnnotationConfigApplicationContext(App.class);
         System.out.println(context.getBean("hello"));
-        Message<String> msg = MessageBuilder.withPayload("Hello").build();
-        MessageChannel channel = (MessageChannel) context.getBean("requestChannel");
-        channel.send(msg);
+
+//        Message<String> msg = MessageBuilder.withPayload("Hello").build();
+//        MessageChannel channel = (MessageChannel) context.getBean("requestChannel");
+//        channel.send(msg);
+
+//        Message<String> msg = MessageBuilder.withPayload("Hello Bence").build();
+//        MessageChannel channel = (MessageChannel) context.getBean("almaChannel");
+//        channel.send(msg);
+
+
+        Message<String> msg1 = MessageBuilder.withPayload("Hello Bence").build();
+        MessageChannel channel1 = (MessageChannel) context.getBean("shopReceiverChannelBetterVersion");
+        channel1.send(msg1);
+
+
+        /*
+        Message <LocalDate> shopMsg=MessageBuilder.withPayload(LocalDate.now()).build();
+        MessageChannel shopChannel=context.getBean("shopReceiverChannel", MessageChannel.class);
+        shopChannel.send(shopMsg);
+        */
 //        HttpRequestExecutingMessageHandler gateway = context.getBean("httpGateway",HttpRequestExecutingMessageHandler.class);
 
 //        ConfigurableApplicationContext context = SpringApplication.run(App.class, args);
