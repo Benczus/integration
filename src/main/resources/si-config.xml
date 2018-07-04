@@ -72,7 +72,9 @@
                                input-channel="shopReceiverChannel"
                                timeout="10000"
                                ignore-send-failures="true"
-                               apply-sequence="true">
+                               apply-sequence="true"
+    default-output-channel="shop1ReceiverChannel"
+    >
 
         <int:recipient channel="shop1ReceiverChannel"/>
         <int:recipient channel="shop2ReceiverChannel"/>
@@ -110,7 +112,8 @@
             reply-channel="shopReplyChannel"
             http-method="GET"
             expected-response-type="shop.integration.dto.ShopDTO"
-            url="http://localhost:8089/shop/"/>
+
+            url="http://localhost:8088/shop/"/>
 
     <int-http:outbound-gateway
             request-channel="shop2ReceiverChannel"

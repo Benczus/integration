@@ -1,8 +1,10 @@
 package shop;
 
+import jdk.nashorn.internal.parser.JSONParser;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import shop.integration.dto.ShopDTO;
 
 /**
  * Unit test for simple App.
@@ -35,4 +37,6 @@ public class AppTest
     {
         assertTrue( true );
     }
+
+
 }

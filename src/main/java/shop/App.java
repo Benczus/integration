@@ -23,13 +23,23 @@ public class App {
 
         Message<String> message = MessageBuilder.withPayload("Hello World!").build();
 
+
+
+
+//        MessageChannel stdOut = context.getBean("shop1ReceiverChannel", MessageChannel.class);
+//
+//        Message<String> message = MessageBuilder.withPayload("Hello World!").build();
+
+
+
         System.out.println("Sout says stdOut is:" + stdOut);
         stdOut.send(message);
 
         ShopGateway shopGateway = context.getBean("ShopGateway", ShopGateway.class);
-        System.out.println(shopGateway.listProducts());
+       System.out.println(shopGateway.listProducts());
 
         ShopComparator shopComparator = new ShopComparator();
+
 
         ArrayList<ShopDTO> shopList = shopGateway.listProducts();
         ShopDTO shopDTO1 = shopList.get(0);
