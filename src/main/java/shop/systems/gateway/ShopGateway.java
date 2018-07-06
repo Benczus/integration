@@ -1,8 +1,9 @@
 package shop.systems.gateway;
 
-import org.springframework.integration.annotation.Header;
-import org.springframework.integration.annotation.Payload;
+
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import shop.integration.dto.ShopDTO;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 public interface ShopGateway {
 
     @Payload("new java.util.Date()")
+
     ArrayList listProducts();
 
     //    ShopDTO listProductsByShop(Message message);

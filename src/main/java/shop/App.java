@@ -23,6 +23,9 @@ import org.springframework.integration.stream.CharacterStreamWritingMessageHandl
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import shop.integration.dto.ProductDTO;
+import shop.integration.dto.ShopDTO;
+import shop.systems.gateway.DummyGateway;
 import sun.util.calendar.BaseCalendar;
 
 
@@ -33,6 +36,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -56,27 +60,27 @@ public class App {
 //        return  gateway;
 //    }
 //
-    @Bean
-    public MessageChannel requestChannel() {
-        return new DirectChannel();
-    }
-
-    @Bean
-    public MessageChannel shopReceiverChannel(){
-        return new DirectChannel();
-    }
-
-    @Bean
-    public MessageChannel shopReceiverChannelBetterVersion(){
-        return new DirectChannel();
-    }
-
-    @Bean
-    public MessageChannel almaChannel(){
-        MessageChannel channel =new DirectChannel();
-
-        return  channel;
-    }
+//    @Bean
+//    public MessageChannel requestChannel() {
+//        return new DirectChannel();
+//    }
+//
+//    @Bean
+//    public MessageChannel shopReceiverChannel(){
+//        return new DirectChannel();
+//    }
+//
+//    @Bean
+//    public MessageChannel shopReceiverChannelBetterVersion(){
+//        return new DirectChannel();
+//    }
+//
+//    @Bean
+//    public MessageChannel almaChannel(){
+//        MessageChannel channel =new DirectChannel();
+//
+//        return  channel;
+//    }
 
 //    @Bean
 //    public MessageChannel replyChannel() {
@@ -87,15 +91,19 @@ public class App {
 //    }
 
 
-    @Bean
-    @ServiceActivator(inputChannel = "shopReceiverChannelBetterVersion")
-    public HttpRequestExecutingMessageHandler httpGateway(){
-        HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://localhost:8088/shop/");
-        gateway.setHttpMethod(HttpMethod.GET);
-        gateway.setExpectedResponseType(String.class);
-        gateway.setOutputChannel(almaChannel());
-        return gateway;
-    }
+//    @Bean
+//    @ServiceActivator(inputChannel = "shopReceiverChannelBetterVersion")
+//    public HttpRequestExecutingMessageHandler httpGateway(){
+//
+//        HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://localhost:8088/shop/");
+//        gateway.setHttpMethod(HttpMethod.GET);
+//        gateway.setExpectedResponseType(ShopDTO.class);
+//        gateway.setOutputChannel(almaChannel());
+//        return gateway;
+//    }
+
+
+
 
 
 
@@ -104,7 +112,7 @@ public class App {
         return "alma";
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(App.class);
         System.out.println(context.getBean("hello"));
 
@@ -117,9 +125,27 @@ public class App {
 //        channel.send(msg);
 
 
-        Message<String> msg1 = MessageBuilder.withPayload("Hello Bence").build();
-        MessageChannel channel1 = (MessageChannel) context.getBean("shopReceiverChannelBetterVersion");
-        channel1.send(msg1);
+//        System.out.println("--------------");
+//
+//        Message<String> msg1 = MessageBuilder.withPayload("Hello Bence").build();
+//        MessageChannel channel1 = (MessageChannel) context.getBean("shopReceiverChannelBetterVersion");
+//        channel1.send(msg1);
+//
+//        System.out.println("--------------");
+
+        DummyGateway gateway = (DummyGateway) context.getBean("dummyGateway");
+        gateway.dummyMethod();
+
+        List<ProductDTO> productlist= gateway.listProducts();
+
+        for (ProductDTO productDTO : productlist
+             ) {
+            System.out.println(productDTO.getItemName());
+
+        }
+
+        System.out.println("\nbye bye");
+
 
 
         /*
